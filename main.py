@@ -52,7 +52,7 @@ def read_data_from_file(filename):
         while i < len(lines):
             if lines[i].startswith('instance'):
                 m, n = map(int, lines[i + 1].split())
-                instance_data = [[int(x) for x in lines[j].split()[1:]] for j in range(i + 2, i + m + 2)]
+                instance_data = [[int(x) for x in lines[i + j + 2].split()[1:]] for j in range(m)]
                 # 转置数据
                 machine_times = list(map(list, zip(*instance_data)))
                 data.append((m, n, machine_times))
@@ -60,6 +60,7 @@ def read_data_from_file(filename):
             else:
                 i += 1
     return data
+
 
 
 
