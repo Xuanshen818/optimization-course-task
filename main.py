@@ -77,7 +77,7 @@ def main():
         print("实例", idx)
         print("最优调度方案:", best_schedule)
         print("总完工时间:", best_time)
-        print(123)
+        print()
 
 
 if __name__ == "__main__":
