@@ -11,14 +11,15 @@ def evaluate_schedule(schedule, machine_times):
     return max(machine_finish_times)
 
 
-def simulated_annealing(machine_times, initial_schedule, initial_temperature, cooling_rate, iterations):
-    """使用模拟退火算法求解工件调度问题"""
+def simulated_annealing(machine_times, initial_schedule, initial_temperature, cooling_rate, max_iterations):
+    """使用优化后的模拟退火算法求解工件调度问题"""
     current_schedule = initial_schedule
     current_temperature = initial_temperature
     best_schedule = initial_schedule
     best_schedule_time = evaluate_schedule(initial_schedule, machine_times)
+    iteration = 0
 
-    for i in range(iterations):
+    while current_temperature > 0 and iteration < max_iterations:
         new_schedule = current_schedule[:]
         # 产生新解：随机交换两个工件的位置
         index1, index2 = random.sample(range(len(new_schedule)), 2)
@@ -27,9 +28,14 @@ def simulated_annealing(machine_times, initial_schedule, initial_temperature, co
         new_schedule_time = evaluate_schedule(new_schedule, machine_times)
         current_schedule_time = evaluate_schedule(current_schedule, machine_times)
 
+        # 计算接受概率
+        if new_schedule_time < current_schedule_time:
+            accept_probability = 1.0
+        else:
+            accept_probability = math.exp((current_schedule_time - new_schedule_time) / current_temperature)
+
         # 接受或拒绝新解
-        if new_schedule_time < current_schedule_time or random.random() < math.exp(
-                (current_schedule_time - new_schedule_time) / current_temperature):
+        if random.random() < accept_probability:
             current_schedule = new_schedule
 
         # 更新最优解
@@ -37,8 +43,9 @@ def simulated_annealing(machine_times, initial_schedule, initial_temperature, co
             best_schedule = new_schedule
             best_schedule_time = new_schedule_time
 
-        # 降温
+        # 更新温度
         current_temperature *= cooling_rate
+        iteration += 1
 
     return best_schedule, best_schedule_time
 
@@ -62,19 +69,17 @@ def read_data_from_file(filename):
     return data
 
 
-
-
 def main():
     """主函数"""
     filename = "test.txt"
     instances = read_data_from_file(filename)
     for idx, (m, n, machine_times) in enumerate(instances):
         initial_schedule = list(range(n))
-        initial_temperature = 1000
+        initial_temperature = sum(sum(machine_times, [])) / (m * n)  # 初始温度设定为平均加工时间
         cooling_rate = 0.99
-        iterations = 1000
+        max_iterations = 1000  # 最大迭代次数
         best_schedule, best_time = simulated_annealing(machine_times, initial_schedule, initial_temperature,
-                                                       cooling_rate, iterations)
+                                                       cooling_rate, max_iterations)
         print("实例", idx)
         print("最优调度方案:", best_schedule)
         print("总完工时间:", best_time)
