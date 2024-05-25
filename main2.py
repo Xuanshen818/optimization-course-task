@@ -1,5 +1,4 @@
 import random
-import math
 
 
 def read_data_from_file(filename):
@@ -109,8 +108,8 @@ def main():
         mutation_rate = 0.1  # 变异率
         num_iterations = 100  # 迭代次数
 
-        best_individual, best_time = genetic_algorithm(machine_times, population_size, num_parents,
-                                                        num_offsprings, mutation_rate, num_iterations)
+        best_individual, best_time = genetic_algorithm(machine_times, population_size, num_parents, num_offsprings,
+                                                       mutation_rate, num_iterations)
 
         print("实例", idx)
         print("最优调度方案:", best_individual)
