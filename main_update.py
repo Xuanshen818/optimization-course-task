@@ -1,6 +1,6 @@
 import random
 import math
-import time
+
 
 def evaluate_schedule(schedule, machine_times):
     """计算给定调度方案的总完工时间"""
@@ -17,8 +17,8 @@ def generate_initial_solution(n):
 def generate_neighbor_solution(solution):
     """生成邻域内的随机新解"""
     neighbor_solution = solution[:]
-    index1, index2 = random.sample(range(len(solution)), 2)
-    neighbor_solution[index1], neighbor_solution[index2] = neighbor_solution[index2], neighbor_solution[index1]
+    index1, index2, index3 = random.sample(range(len(solution)), 3)
+    neighbor_solution[index1], neighbor_solution[index2], neighbor_solution[index3] = neighbor_solution[index2], neighbor_solution[index3], neighbor_solution[index1]
     return neighbor_solution
 
 def simulated_annealing(machine_times, initial_temperature, cooling_rate, max_iterations):
@@ -35,7 +35,11 @@ def simulated_annealing(machine_times, initial_temperature, cooling_rate, max_it
         current_time = evaluate_schedule(current_solution, machine_times)
 
         # 计算接受概率
-        accept_probability = min(1, math.exp(-(new_time - current_time) / current_temperature))
+        delta_energy = new_time - current_time
+        if delta_energy < 0:
+            accept_probability = 1
+        else:
+            accept_probability = math.exp(-delta_energy / current_temperature)
 
         # 接受或拒绝新解
         if random.random() < accept_probability:
@@ -74,16 +78,15 @@ def main():
     filename = "test.txt"
     instances = read_data_from_file(filename)
     for idx, (m, n, machine_times) in enumerate(instances):
-        initial_temperature = sum(sum(machine_times, [])) / (m * n)  # 初始温度设定为平均加工时间的一半
-        cooling_rate = 0.90  # 降低冷却率
-        max_iterations = 3000  # 增加最大迭代次数
+        initial_temperature = sum(sum(machine_times, [])) / (m * n)  # 初始温度设定为平均加工时间
+        cooling_rate = 0.99  # 降低冷却率
+        max_iterations = 1000  # 增加最大迭代次数
         best_schedule, best_time = simulated_annealing(machine_times, initial_temperature,
                                                        cooling_rate, max_iterations)
         print("实例", idx)
         print("最优调度方案:", best_schedule)
         print("总完工时间:", best_time)
-        print()
-
+        print(
+)
 if __name__ == "__main__":
     main()
-
