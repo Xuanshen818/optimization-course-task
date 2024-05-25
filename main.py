@@ -19,7 +19,7 @@ def simulated_annealing(machine_times, initial_schedule, initial_temperature, co
     best_schedule_time = evaluate_schedule(initial_schedule, machine_times)
     iteration = 0
 
-    while current_temperature > 0 and iteration < max_iterations:
+    while iteration < max_iterations:
         new_schedule = current_schedule[:]
         # 产生新解：随机交换两个工件的位置
         index1, index2 = random.sample(range(len(new_schedule)), 2)
@@ -32,7 +32,8 @@ def simulated_annealing(machine_times, initial_schedule, initial_temperature, co
         if new_schedule_time < current_schedule_time:
             accept_probability = 1.0
         else:
-            accept_probability = math.exp((current_schedule_time - new_schedule_time) / current_temperature)
+            delta_energy = current_schedule_time - new_schedule_time
+            accept_probability = math.exp(delta_energy / current_temperature)
 
         # 接受或拒绝新解
         if random.random() < accept_probability:
