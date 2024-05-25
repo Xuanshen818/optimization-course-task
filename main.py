@@ -1,5 +1,8 @@
 import random
 import math
+import time
+
+start_time = time.time()
 
 
 def evaluate_schedule(schedule, machine_times):
@@ -89,3 +92,7 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+end_time = time.time()
+execution_time = end_time - start_time
+print("代码运行时间：", execution_time, "秒")

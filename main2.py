@@ -1,5 +1,7 @@
 import random
+import time
 
+start_time = time.time()
 
 def read_data_from_file(filename):
     """从文件中读取数据"""
@@ -119,3 +121,7 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+end_time = time.time()
+execution_time = end_time - start_time
+print("代码运行时间：", execution_time, "秒")
